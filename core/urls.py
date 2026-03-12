@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
+from apps.dashboard import views as dash_views  # Importe as views do dashboard
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -8,4 +9,6 @@ urlpatterns = [
     # Rotas de login/logout nativas
     path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('dashboard/',  dash_views.index, name='dashboard'),  # Nova rota
+    path('', dash_views.index),  # Atalho para a raiz também ir pro dashboard
 ]
