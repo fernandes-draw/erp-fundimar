@@ -1,16 +1,20 @@
-from apps.produtos.models import Produto, Categoria
 import os
 import django
 
-# Configuração do ambiente Django
+# fmt: off
+# ESTA CONFIGURAÇÃO PRECISA VIR ANTES DE IMPORTAR OS MODELS
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
 django.setup()
+
+# SÓ AGORA OS IMPORTS DO DJANGO SÃO PERMITIDOS
+from apps.produtos.models import Produto, Categoria
+# fmt: on
 
 
 def popular_banco():
     print("Iniciando a população de dados para Fundimar...")
 
-    # 1. Criar Categorias
+    # Criar ou recuperar Categorias
     cat_mp, _ = Categoria.objects.get_or_create(
         nome='Ligas e Metais', setor='Fundição')
     cat_ins, _ = Categoria.objects.get_or_create(
@@ -22,7 +26,7 @@ def popular_banco():
     cat_fer, _ = Categoria.objects.get_or_create(
         nome='Ferramentas de Corte', setor='Ferramentaria')
 
-    # 2. Criar Produtos de exemplo
+    # Lista de Produtos
     produtos_data = [
         {
             "codigo_interno": "MP-001", "nome": "Ferro Gusa LD", "tipo": "MP",
@@ -30,7 +34,7 @@ def popular_banco():
         },
         {
             "codigo_interno": "MP-002", "nome": "Ferro Manganês HC", "tipo": "MP",
-            "categoria": cat_mp, "unidade": "kg", "estoque": 450, "min": 500  # Alerta estoque baixo
+            "categoria": cat_mp, "unidade": "kg", "estoque": 450, "min": 500
         },
         {
             "codigo_interno": "IN-010", "nome": "Resina Fenólica", "tipo": "IN",

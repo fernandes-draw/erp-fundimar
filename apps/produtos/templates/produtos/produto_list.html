@@ -2,65 +2,108 @@
 
 {% block content %}
 <div class="bg-white rounded-lg shadow-md overflow-hidden">
-    <div class="p-6 border-b border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4">
+    <div class="p-6 border-b border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-50">
         <div>
-            <h2 class="text-xl font-bold text-slate-800">Catálogo de Produtos</h2>
-            <p class="text-sm text-gray-500">Gestão de Matérias-primas, Insumos e Produtos Acabados</p>
+            <h2 class="text-xl font-bold text-slate-800">
+                {% if setor == 'engenharia' %}
+                    <i class="fas fa-drafting-compass mr-2 text-blue-600"></i>Painel de Engenharia e Desenvolvimento
+                {% else %}
+                    <i class="fas fa-forklift mr-2 text-blue-600"></i>Gestão de Insumos e Suprimentos
+                {% endif %}
+            </h2>
+            <p class="text-sm text-gray-500">
+                {% if setor == 'engenharia' %}
+                    Acompanhamento de modelagem, ferramentaria e viabilidade técnica.
+                {% else %}
+                    Controle de matérias-primas, químicos e materiais de manutenção.
+                {% endif %}
+            </p>
         </div>
-        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition duration-200 flex items-center">
-            <i class="fas fa-plus mr-2"></i> Novo Produto
-        </button>
+        <a href="#" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition duration-200 flex items-center shadow-sm">
+            <i class="fas fa-plus mr-2"></i> Novo {% if setor == 'engenharia' %}Projeto{% else %}Item{% endif %}
+        </a>
     </div>
 
     <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
-            <thead class="bg-slate-50 border-b border-gray-200">
+            <thead class="bg-slate-100 border-b border-gray-200 text-xs uppercase tracking-wider text-slate-600">
                 <tr>
-                    <th class="p-4 font-semibold text-slate-700">Cód. Interno</th>
-                    <th class="p-4 font-semibold text-slate-700">Nome / Descrição</th>
-                    <th class="p-4 font-semibold text-slate-700">Tipo</th>
-                    <th class="p-4 font-semibold text-slate-700">Categoria</th>
-                    <th class="p-4 font-semibold text-slate-700 text-right">Estoque Atual</th>
-                    <th class="p-4 font-semibold text-slate-700 text-center">Ações</th>
+                    <th class="p-4 font-bold">Identificação</th>
+                    {% if setor == 'engenharia' %}
+                        <th class="p-4 font-bold">Fase Atual</th>
+                        <th class="p-4 font-bold">Origem/Marca</th>
+                    {% else %}
+                        <th class="p-4 font-bold">Categoria</th>
+                        <th class="p-4 font-bold text-right">Estoque</th>
+                    {% endif %}
+                    <th class="p-4 font-bold text-center">Status</th>
+                    <th class="p-4 font-bold text-center">Ações</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
                 {% for produto in produtos %}
-                <tr class="hover:bg-slate-50 transition-colors">
-                    <td class="p-4 font-mono text-sm text-blue-600 font-bold">{{ produto.codigo_interno }}</td>
+                <tr class="hover:bg-blue-50/50 transition-colors">
                     <td class="p-4">
-                        <div class="text-sm font-medium text-slate-900">{{ produto.nome }}</div>
-                        {% if produto.cliente_exclusivo %}
-                        <div class="text-xs text-orange-600 font-semibold italic">Exclusivo: {{ produto.cliente_exclusivo }}</div>
-                        {% endif %}
+                        <div class="flex flex-col">
+                            <span class="font-mono text-xs font-bold text-blue-600">{{ produto.codigo_interno }}</span>
+                            <span class="text-sm font-semibold text-slate-800">{{ produto.nome }}</span>
+                            {% if produto.cliente_exclusivo %}
+                                <span class="text-[10px] bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded w-fit mt-1 uppercase font-bold">
+                                    Exclusivo: {{ produto.cliente_exclusivo }}
+                                </span>
+                            {% endif %}
+                        </div>
                     </td>
-                    <td class="p-4 text-sm">
-                        {% if produto.tipo == 'MP' %}
-                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-bold">Matéria-Prima</span>
-                        {% elif produto.tipo == 'PA' %}
-                            <span class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold">Acabado</span>
-                        {% elif produto.tipo == 'FE' %}
-                            <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold">Ferramentaria</span>
-                        {% else %}
-                            <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-bold">{{ produto.get_tipo_display }}</span>
-                        {% endif %}
-                    </td>
-                    <td class="p-4 text-sm text-gray-600">{{ produto.categoria.nome }}</td>
-                    <td class="p-4 text-sm text-right font-medium">
-                        <span class="{% if produto.estoque_atual < produto.estoque_minimo %}text-red-600 font-bold{% endif %}">
-                            {{ produto.estoque_atual }} {{ produto.unidade_medida }}
-                        </span>
-                    </td>
+
+                    {% if setor == 'engenharia' %}
+                        <td class="p-4">
+                            {% if produto.status == 'PROJETO' %}
+                                <div class="flex items-center text-blue-600 font-medium text-sm">
+                                    <i class="fas fa-microchip mr-2 animate-pulse"></i> Modelagem/Ferramentaria
+                                </div>
+                            {% elif produto.status == 'VIABILIDADE' %}
+                                <div class="flex items-center text-amber-600 font-medium text-sm">
+                                    <i class="fas fa-search-dollar mr-2"></i> Análise de Viabilidade
+                                </div>
+                            {% else %}
+                                <div class="flex items-center text-green-600 font-medium text-sm">
+                                    <i class="fas fa-check-circle mr-2"></i> Liberado Produção
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td class="p-4 text-xs text-slate-600">
+                            <div>{{ produto.get_origem_display }}</div>
+                            <div class="italic text-slate-400">{{ produto.marca_compativel|default:"-" }}</div>
+                        </td>
+                    {% else %}
+                        <td class="p-4 text-sm text-slate-600">{{ produto.categoria.nome }}</td>
+                        <td class="p-4 text-right">
+                            <span class="text-sm font-bold {% if produto.estoque_atual < produto.estoque_minimo %}text-red-600 animate-bounce inline-block{% else %}text-slate-700{% endif %}">
+                                {{ produto.estoque_atual }} {{ produto.unidade_medida }}
+                            </span>
+                        </td>
+                    {% endif %}
+
                     <td class="p-4 text-center">
-                        <div class="flex justify-center space-x-2">
-                            <button class="text-blue-500 hover:text-blue-700" title="Editar"><i class="fas fa-edit"></i></button>
-                            <button class="text-red-500 hover:text-red-700" title="Excluir"><i class="fas fa-trash"></i></button>
+                        {% if produto.status == 'ATIVO' %}
+                            <span class="px-2 py-1 bg-green-100 text-green-700 rounded-md text-[10px] font-bold uppercase border border-green-200">Ativo</span>
+                        {% elif produto.status == 'OBSOLETO' %}
+                            <span class="px-2 py-1 bg-gray-100 text-gray-500 rounded-md text-[10px] font-bold uppercase border border-gray-200">Obsoleto</span>
+                        {% else %}
+                            <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-md text-[10px] font-bold uppercase border border-blue-200">Em Curso</span>
+                        {% endif %}
+                    </td>
+
+                    <td class="p-4 text-center">
+                        <div class="flex justify-center space-x-3 text-slate-400">
+                            <a href="#" class="hover:text-blue-600 transition-colors"><i class="fas fa-eye"></i></a>
+                            <a href="#" class="hover:text-amber-600 transition-colors"><i class="fas fa-edit"></i></a>
                         </div>
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="6" class="p-8 text-center text-gray-500 italic">Nenhum produto cadastrado ainda.</td>
+                    <td colspan="5" class="p-12 text-center text-slate-400 italic">Nenhum item encontrado neste setor.</td>
                 </tr>
                 {% endfor %}
             </tbody>

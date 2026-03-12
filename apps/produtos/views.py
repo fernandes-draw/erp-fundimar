@@ -8,5 +8,14 @@ from .models import Produto
 
 @login_required
 def produto_list(request):
+    setor = request.GET.get('setor')
     produtos = Produto.objects.all().select_related('categoria')
-    return render(request, 'produtos/produto_list.html', {'produtos': produtos})
+
+    if setor == 'suprimentos':
+        # Filtra apenas o que é comprado para a fundição/manutenção
+        produtos = produtos.filter(origem='COMPRA')
+    elif setor == 'engenharia':
+        # Filtra o que é desenvolvido pela Fundimar ou para Clientes
+        produtos = produtos.exclude(origem='COMPRA')
+
+    return render(request, 'produtos/produto_list.html', {'produtos': produtos, 'setor': setor})

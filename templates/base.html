@@ -51,9 +51,16 @@
                     <span class="sidebar-text ml-3">Dashboard</span>
                 </a>
                 
-                <a href="{% url 'produto_list' %}" class="sidebar-item flex items-center p-3 hover:bg-slate-700 rounded transition-all duration-200 group" title="Estoque">
-                    <i class="fas fa-boxes w-6 text-center group-hover:text-blue-400"></i>
-                    <span class="sidebar-text ml-3">Produtos</span>
+                <div class="sidebar-text text-xs font-semibold text-slate-500 uppercase mt-4 mb-2 px-3">Suprimentos</div>
+                <a href="{% url 'produto_list' %}?setor=suprimentos" class="sidebar-item flex items-center p-3 hover:bg-slate-700 rounded transition-all duration-200 group">
+                    <i class="fas fa-forklift w-6 text-center group-hover:text-blue-400"></i>
+                    <span class="sidebar-text ml-3">Insumos e Ligas</span>
+                </a>
+
+                <div class="sidebar-text text-xs font-semibold text-slate-500 uppercase mt-4 mb-2 px-3">Estratégico</div>
+                <a href="{% url 'produto_list' %}?setor=engenharia" class="sidebar-item flex items-center p-3 hover:bg-slate-700 rounded transition-all duration-200 group">
+                    <i class="fas fa-drafting-compass w-6 text-center group-hover:text-blue-400"></i>
+                    <span class="sidebar-text ml-3">Engenharia e Peças</span>
                 </a>
                 
                 <a href="#" class="sidebar-item flex items-center p-3 hover:bg-slate-700 rounded transition-all duration-200 group" title="Estoque">
