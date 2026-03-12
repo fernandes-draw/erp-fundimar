@@ -3,35 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ERP System</title>
+    <title>ERP Fundimar</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Classe para esconder texto suavemente */
+        .sidebar-text {
+            transition: opacity 0.3s ease-in-out;
+        }
+        .sidebar-collapsed .sidebar-text {
+            display: none;
+            opacity: 0;
+        }
+        .sidebar-collapsed .sidebar-item {
+            justify-content: center;
+        }
+        .sidebar-collapsed .sidebar-logo-text {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans leading-normal tracking-normal text-slate-900">
+
+    <div class="flex flex-col md:flex-row min-h-screen">
+        
+        {% if user.is_authenticated %}
+        <div class="bg-slate-800 text-white p-4 flex justify-between items-center md:hidden">
+            <span class="font-bold uppercase tracking-wider text-blue-400">Fundimar</span>
+            <button id="mobile-menu-button" class="text-white focus:outline-none">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </div>
+
+        <aside id="sidebar" class="bg-slate-800 text-white w-full md:w-64 shadow-lg hidden md:block transition-all duration-300 ease-in-out overflow-hidden">
+            <div class="p-5 flex items-center justify-between border-b border-slate-700 h-16">
+                <span class="sidebar-logo-text text-xl font-bold uppercase tracking-wider text-blue-400 truncate">Fundimar</span>
+                <span class="sidebar-logo-icon hidden text-2xl font-bold text-blue-400 mx-auto">F</span>
+                
+                <button id="toggle-sidebar" class="hidden md:block text-slate-400 hover:text-white transition-colors">
+                    <i id="toggle-icon" class="fas fa-chevron-left"></i>
+                </button>
+            </div>
+            
+            <nav class="mt-5 px-4 space-y-2">
+                <a href="{% url 'dashboard' %}" class="sidebar-item flex items-center p-3 hover:bg-slate-700 rounded transition-all duration-200 group" title="Dashboard">
+                    <i class="fas fa-chart-line w-6 text-center group-hover:text-blue-400"></i>
+                    <span class="sidebar-text ml-3">Dashboard</span>
+                </a>
+                
+                <a href="{% url 'produto_list' %}" class="sidebar-item flex items-center p-3 hover:bg-slate-700 rounded transition-all duration-200 group" title="Estoque">
+                    <i class="fas fa-boxes w-6 text-center group-hover:text-blue-400"></i>
+                    <span class="sidebar-text ml-3">Produtos</span>
+                </a>
+                
+                <a href="#" class="sidebar-item flex items-center p-3 hover:bg-slate-700 rounded transition-all duration-200 group" title="Estoque">
+                    <i class="fas fa-boxes w-6 text-center group-hover:text-blue-400"></i>
+                    <span class="sidebar-text ml-3">Estoque</span>
+                </a>
+
+                <a href="#" class="sidebar-item flex items-center p-3 hover:bg-slate-700 rounded transition-all duration-200 group" title="Clientes">
+                    <i class="fas fa-users w-6 text-center group-hover:text-blue-400"></i>
+                    <span class="sidebar-text ml-3">Clientes</span>
+                </a>
+                
+                <div class="border-t border-slate-700 my-4"></div>
+                
+                <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="sidebar-item w-full flex items-center p-3 text-red-400 hover:bg-slate-700 rounded transition duration-200" title="Sair">
+                        <i class="fas fa-sign-out-alt w-6 text-center"></i>
+                        <span class="sidebar-text ml-3 text-left">Sair</span>
+                    </button>
+                </form>
+            </nav>
+        </aside>
+        {% endif %}
+
+        <div class="flex-1 flex flex-col min-w-0">
+            {% if user.is_authenticated %}
+            <header class="bg-white shadow-sm p-4 flex justify-between items-center h-16 border-b">
+                <span class="text-gray-600">Olá, <strong>{{ user.username }}</strong></span>
+                <div class="flex items-center space-y-2">
+                    <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">v1.0</span>
+                </div>
+            </header>
+            {% endif %}
+
+            <main class="p-6">
+                {% block content %}
+                {% endblock %}
+            </main>
+        </div>
+    </div>
+
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#1e40af', // Exemplo de cor azul industrial
-                    }
+        const btnMobile = document.getElementById('mobile-menu-button');
+        const btnToggle = document.getElementById('toggle-sidebar');
+        const sidebar = document.getElementById('sidebar');
+        const icon = document.getElementById('toggle-icon');
+        const logoIcon = document.querySelector('.sidebar-logo-icon');
+        const logoText = document.querySelector('.sidebar-logo-text');
+
+        // Toggle Mobile
+        if (btnMobile) {
+            btnMobile.addEventListener('click', () => {
+                sidebar.classList.toggle('hidden');
+            });
+        }
+
+        // Toggle Desktop (Recolher)
+        if (btnToggle) {
+            btnToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('md:w-64');
+                sidebar.classList.toggle('md:w-20');
+                sidebar.classList.toggle('sidebar-collapsed');
+                
+                // Inverte o ícone e a logo
+                if (sidebar.classList.contains('sidebar-collapsed')) {
+                    icon.classList.replace('fa-chevron-left', 'fa-chevron-right');
+                    logoText.classList.add('hidden');
+                    logoIcon.classList.remove('hidden');
+                } else {
+                    icon.classList.replace('fa-chevron-right', 'fa-chevron-left');
+                    logoText.classList.remove('hidden');
+                    logoIcon.classList.add('hidden');
                 }
-            }
+            });
         }
     </script>
-</head>
-<body class="bg-gray-100 h-screen flex flex-col">
-
-    {% if user.is_authenticated %}
-    <nav class="bg-primary text-white p-4 shadow-md">
-        <div class="container mx-auto flex justify-between items-center">
-            <h1 class="font-bold text-xl">ERP Industrial</h1>
-            <a href="{% url 'logout' %}" class="bg-red-500 px-3 py-1 rounded text-sm">Sair</a>
-        </div>
-    </nav>
-    {% endif %}
-
-    <main class="flex-grow container mx-auto p-4">
-        {% block content %}
-        {% endblock %}
-    </main>
 
 </body>
 </html>
