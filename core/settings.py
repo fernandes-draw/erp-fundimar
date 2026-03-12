@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,7 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # My APPS
-    'apps/usuarios',
+    'apps.usuarios',
 ]
 
 MIDDLEWARE = [
@@ -45,7 +46,7 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -107,4 +108,9 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# Avisa ao Django que usaremos nosso modelo customizado
 AUTH_USER_MODEL = 'usuarios.User'
+
+LOGIN_URL = 'login'              # Nome da URL da página de login
+LOGIN_REDIRECT_URL = 'dashboard'  # Para onde o usuário vai após logar
+LOGOUT_REDIRECT_URL = 'login'    # Para onde vai após sair
