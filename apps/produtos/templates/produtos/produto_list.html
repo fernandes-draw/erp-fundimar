@@ -43,10 +43,10 @@
                     {% endif %}
 
                     <td class="p-2 border border-slate-300 font-mono font-black">
-                        {% if setor == 'engenharia' and produto.caminho_projeto_cad %}
-                            <a href="file://{{ produto.caminho_projeto_cad|replace_backslashes }}" 
-                               title="Abrir projeto no Inventor: {{ produto.caminho_projeto_cad }}"
-                               class="text-orange-700 hover:text-orange-500 flex items-center gap-1">
+                        {% if setor == 'engenharia' and produto.link_inventor %}
+                            <a href="{{ produto.link_inventor }}" 
+                              title="Abrir Projeto: {{ produto.numero_projeto }}"
+                              class="text-orange-700 hover:text-orange-500 flex items-center gap-1">
                                 <i class="fas fa-cube text-[9px]"></i>
                                 <span>{{ produto.codigo_interno }}</span>
                             </a>

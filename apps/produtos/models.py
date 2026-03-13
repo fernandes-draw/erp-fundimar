@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings # Importa as configurações do settings.py
 
 class Categoria(models.Model):
     nome = models.CharField(max_length=100)
@@ -87,6 +88,23 @@ class Produto(models.Model):
     unidade_medida = models.CharField(max_length=10, default='un')
     estoque_minimo = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     estoque_atual = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    
+    @property
+    def link_inventor(self):
+        """
+        Monta o caminho: Z:/fundimar/modelacao/000123/000123.ipj
+        """
+        if self.numero_projeto:
+            # Remove o "P-" caso você digite com o prefixo no banco, mantendo apenas os números
+            limpo = self.numero_projeto.replace("P-", "").strip()
+            base = settings.PATH_BASE_INVENTOR
+            return f"file:///{base}{limpo}/{limpo}.ipj"
+        return None
+    
+    # Método para facilitar o uso do nome do sistema nos templates
+    def get_nome_sistema(self):
+        return settings.NOME_SISTEMA
 
     def __str__(self):
         return f"{self.numero_projeto} | {self.codigo_interno} - {self.nome}"
+    

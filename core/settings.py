@@ -116,3 +116,10 @@ AUTH_USER_MODEL = 'usuarios.User'
 LOGIN_URL = 'login'              # Nome da URL da página de login
 LOGIN_REDIRECT_URL = 'dashboard'  # Para onde o usuário vai após logar
 LOGOUT_REDIRECT_URL = 'login'    # Para onde vai após sair
+
+# Configurações Globais do Sistema
+NOME_SISTEMA = "ERP FUNDIMAR - GESTÃO INDUSTRIAL"
+
+# Caminho base do servidor para arquivos do Inventor
+# Se mudar o servidor, basta alterar este caminho aqui
+PATH_BASE_INVENTOR = "Z:/fundimar/modelacao/"

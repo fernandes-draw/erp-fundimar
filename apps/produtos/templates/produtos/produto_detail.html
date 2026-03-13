@@ -67,11 +67,12 @@
 
     <div class="p-6 grid grid-cols-2 gap-8">
         <div>
-            <h3 class="text-xs font-black text-slate-800 uppercase mb-3 italic">Desenvolvimento CAD</h3>
-            <div class="bg-slate-100 p-3 rounded text-[11px] font-mono break-all border border-dashed border-slate-300">
-                <i class="fas fa-folder-open mr-2 text-amber-500"></i>{{ produto.caminho_projeto_cad|default:"Caminho não definido no Inventor" }}
+            <h3 class="text-xs font-black text-slate-800 uppercase mb-3 italic">Localização no Servidor</h3>
+            <div class="bg-slate-100 p-3 rounded text-[11px] font-mono break-all border border-dashed border-slate-300 select-all" title="Clique para selecionar e copiar">
+                <i class="fas fa-network-wired mr-2 text-blue-500"></i>
+                {{ produto.link_inventor|default:"Projeto não vinculado ao servidor" }}
             </div>
-            <p class="mt-2 text-[10px] text-slate-500">* Caminho para o arquivo .ipj original da modelagem.</p>
+            <p class="mt-2 text-[10px] text-slate-500">* Caminho automático baseado no padrão FUNDIMAR: BASE/PROJETO/PROJETO.ipj</p>
         </div>
         <div>
             <h3 class="text-xs font-black text-slate-800 uppercase mb-3 italic">Material do Ferramental</h3>
