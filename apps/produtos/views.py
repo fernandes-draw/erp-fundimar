@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+from .models import Produto
 
 # Create your views here.
 from django.shortcuts import render
@@ -19,3 +20,13 @@ def produto_list(request):
         produtos = produtos.exclude(origem='COMPRA')
 
     return render(request, 'produtos/produto_list.html', {'produtos': produtos, 'setor': setor})
+
+def produto_detail(request, pk):
+    produto = get_object_or_404(Produto, pk=pk)
+    # A variável global do sistema conforme solicitado
+    NOME_SISTEMA = "ERP FUNDIMAR - GESTÃO INDUSTRIAL" 
+    
+    return render(request, 'produtos/produto_detail.html', {
+        'produto': produto,
+        'nome_sistema': NOME_SISTEMA
+    })

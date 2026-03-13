@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto bg-white shadow-lg border border-gray-200">
+    
+    <div class="p-6 border-b-4 border-slate-800 flex justify-between items-center bg-slate-50">
+        <div>
+            <h1 class="text-2xl font-black text-slate-800 uppercase tracking-tighter">Ficha Técnica de Produto</h1>
+            <p class="text-sm text-slate-500 font-bold">{{ nome_sistema }}</p>
+        </div>
+        <div class="text-right">
+            <span class="text-xs font-bold text-slate-400">Emissão: {% now "d/m/Y H:i" %}</span>
+            <div class="mt-1">
+                <button onclick="window.print()" class="bg-slate-800 text-white text-[10px] px-3 py-1 rounded hover:bg-slate-700">
+                    <i class="fas fa-print mr-1"></i> IMPRIMIR PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-6 grid grid-cols-3 gap-4 border-b">
+        <div class="col-span-1">
+            <label class="block text-[10px] font-bold text-slate-400 uppercase">Ref. Model (Código)</label>
+            <p class="text-xl font-mono font-black text-blue-700">{{ produto.codigo_interno }}</p>
+        </div>
+        <div class="col-span-2">
+            <label class="block text-[10px] font-bold text-slate-400 uppercase">Descrição do Produto</label>
+            <p class="text-xl font-bold text-slate-800 uppercase">{{ produto.nome }}</p>
+        </div>
+        <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase">Linha de Mercado</label>
+            <p class="text-sm font-semibold">{{ produto.get_linha_display }}</p>
+        </div>
+        <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase">Cliente / Exclusividade</label>
+            <p class="text-sm font-semibold">{{ produto.cliente_exclusivo|default:"LINHA PRÓPRIA FUNDIMAR" }}</p>
+        </div>
+        <div>
+            <label class="block text-[10px] font-bold text-slate-400 uppercase">Situação do Projeto</label>
+            <p class="text-sm font-bold text-orange-600 uppercase">{{ produto.get_status_projeto_display }}</p>
+        </div>
+    </div>
+
+    <div class="p-6 bg-slate-50 border-b">
+        <h3 class="text-xs font-black text-slate-800 uppercase mb-4 flex items-center">
+            <i class="fas fa-microchip mr-2"></i> Especificações de Engenharia e Processo
+        </h3>
+        <div class="grid grid-cols-4 gap-6 text-center">
+            <div class="bg-white p-3 border rounded">
+                <label class="block text-[9px] font-bold text-slate-400 uppercase">Material da Peça</label>
+                <p class="text-lg font-bold text-slate-700">{{ produto.material_peca|default:"---" }}</p>
+            </div>
+            <div class="bg-white p-3 border rounded">
+                <label class="block text-[9px] font-bold text-slate-400 uppercase">Peso Bruto (Amostra)</label>
+                <p class="text-lg font-bold text-slate-700">{{ produto.peso_bruto_amostra }} <span class="text-xs">kg</span></p>
+            </div>
+            <div class="bg-white p-3 border rounded">
+                <label class="block text-[9px] font-bold text-slate-400 uppercase">Figuras p/ Caixa</label>
+                <p class="text-lg font-bold text-slate-700">{{ produto.figuras_por_caixa }}</p>
+            </div>
+            <div class="bg-white p-3 border rounded">
+                <label class="block text-[9px] font-bold text-slate-400 uppercase">Macho (Qtde)</label>
+                <p class="text-lg font-bold text-slate-700">{{ produto.quantidade_caixa_macho|default:"0" }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-6 grid grid-cols-2 gap-8">
+        <div>
+            <h3 class="text-xs font-black text-slate-800 uppercase mb-3 italic">Desenvolvimento CAD</h3>
+            <div class="bg-slate-100 p-3 rounded text-[11px] font-mono break-all border border-dashed border-slate-300">
+                <i class="fas fa-folder-open mr-2 text-amber-500"></i>{{ produto.caminho_projeto_cad|default:"Caminho não definido no Inventor" }}
+            </div>
+            <p class="mt-2 text-[10px] text-slate-500">* Caminho para o arquivo .ipj original da modelagem.</p>
+        </div>
+        <div>
+            <h3 class="text-xs font-black text-slate-800 uppercase mb-3 italic">Material do Ferramental</h3>
+            <p class="text-sm font-semibold text-slate-700">{{ produto.material_ferramental|default:"Bloco de Alumínio / Aço" }}</p>
+            <div class="mt-4 p-2 bg-blue-50 border-l-4 border-blue-400">
+                <label class="block text-[9px] font-bold text-blue-500 uppercase">Estágio de Produção Atual</label>
+                <p class="text-sm font-black text-blue-800 uppercase">{{ produto.get_estagio_producao_display }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-6 border-t">
+        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-2">Observações Adicionais / Histórico</label>
+        <div class="text-sm text-slate-700 leading-relaxed italic">
+            {{ produto.observacoes_tecnicas|default:"Nenhuma observação técnica registrada para este desenvolvimento." }}
+        </div>
+    </div>
+
+    <div class="p-4 bg-slate-800 text-white text-[9px] flex justify-between items-center print:hidden">
+        <span>Sistema desenvolvido para FUNDIMAR - Setor de Engenharia</span>
+        <span>ID Interno: {{ produto.id }} | Última alteração: {{ produto.data_ultima_alteracao|date:"d/m/Y" }}</span>
+    </div>
+</div>
+
+<style>
+    @media print {
+        body { background: white; }
+        .sidebar-transition, aside, header, nav, button { display: none !important; }
+        main { padding: 0 !important; margin: 0 !important; }
+        .shadow-lg { shadow: none !important; border: none !important; }
+    }
+</style>
+{% endblock %}

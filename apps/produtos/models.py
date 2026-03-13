@@ -52,21 +52,25 @@ class Produto(models.Model):
     ]
 
     # Identificação
-    codigo_interno = models.CharField(max_length=50, unique=True, verbose_name="REF. MODEL")
+    numero_projeto = models.CharField(max_length=20, blank=True, verbose_name="Projeto") # Ex: P-000123
+    codigo_interno = models.CharField(max_length=50, unique=True, verbose_name="Código")  # Ex: 123456
     nome = models.CharField(max_length=200, verbose_name="Descrição")
+    
     linha = models.CharField(max_length=20, choices=LINHA_CHOICES, default='AUTOMOTIVA')
     categoria = models.ForeignKey(Categoria, on_delete=models.PROTECT)
     tipo = models.CharField(max_length=2, choices=TIPO_CHOICES, default='PA')
 
     # Detalhes Técnicos
-    material_peca = models.CharField(max_length=50, blank=True, verbose_name="Material Peça")
+    material_peca = models.CharField(max_length=50, blank=True, verbose_name="Liga") # Ex: FC-25, GGG-40
     material_ferramental = models.CharField(max_length=50, blank=True, verbose_name="Material Ferram.")
     peso_bruto_amostra = models.DecimalField(max_digits=10, decimal_places=3, null=True, blank=True)
+    peso_teorico = models.DecimalField(max_digits=10, decimal_places=3, null=True, blank=True) # Novo campo
+    
     figuras_por_caixa = models.IntegerField(default=1)
     quantidade_caixa_macho = models.CharField(max_length=50, blank=True)
 
     # Controle e Arquivos
-    caminho_projeto_cad = models.CharField(max_length=500, blank=True)
+    caminho_projeto_cad = models.CharField(max_length=500, blank=True) # Link para o Inventor
     ficha_processo = models.CharField(max_length=200, blank=True)
     observacoes_tecnicas = models.TextField(blank=True)
     
@@ -85,4 +89,4 @@ class Produto(models.Model):
     estoque_atual = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
-        return f"[{self.codigo_interno}] {self.nome}"
+        return f"{self.numero_projeto} | {self.codigo_interno} - {self.nome}"

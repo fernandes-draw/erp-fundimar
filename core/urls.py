@@ -14,4 +14,5 @@ urlpatterns = [
     path('dashboard/',  dash_views.index, name='dashboard'),
     path('', dash_views.index),  # Atalho para a raiz também ir pro dashboard
     path('produtos/', produto_views.produto_list, name='produto_list'),
+    path('produtos/', include('apps.produtos.urls')), # O namespace nasce aqui
 ]

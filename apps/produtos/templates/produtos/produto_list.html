@@ -4,22 +4,27 @@
 <div class="bg-white rounded-lg shadow-md overflow-hidden">
     <div class="p-4 border-b border-gray-200 bg-slate-800 text-white flex justify-between items-center">
         <h2 class="text-lg font-bold tracking-wider italic uppercase">
-            {% if setor == 'engenharia' %}Controle de Engenharia e Projetos{% else %}Controle de Suprimentos e Insumos{% endif %}
+            {% if setor == 'engenharia' %}CONTROLE DE DESENVOLVIMENTO (ENGENHARIA){% else %}GESTÃO DE SUPRIMENTOS{% endif %}
         </h2>
     </div>
 
     <div class="overflow-x-auto">
-        <table class="w-full text-[11px] border-collapse uppercase">
-            <thead class="bg-slate-200 text-slate-700">
+        <table class="w-full text-[10px] border-collapse uppercase tracking-tight">
+            <thead class="bg-slate-200 text-slate-700 font-black">
                 <tr>
-                    <th class="p-2 border border-slate-300">REF. MODEL</th>
-                    <th class="p-2 border border-slate-300">DESCRIÇÃO</th>
                     {% if setor == 'engenharia' %}
-                        <th class="p-2 border border-slate-300">SITUAÇÃO PROJETO</th>
-                        <th class="p-2 border border-slate-300">MAT. PEÇA</th>
-                        <th class="p-2 border border-slate-300 text-center">PESO BRUTO</th>
-                        <th class="p-2 border border-slate-300">ESTÁGIO ATUAL</th>
-                        <th class="p-2 border border-slate-300">CLIENTE</th>
+                        <th class="p-2 border border-slate-300 w-24"># PROJETO</th>
+                    {% endif %}
+                    
+                    <th class="p-2 border border-slate-300 w-24">CÓDIGO</th>
+                    <th class="p-2 border border-slate-300">DESCRIÇÃO</th>
+
+                    {% if setor == 'engenharia' %}
+                        <th class="p-2 border border-slate-300">SITUAÇÃO</th>
+                        <th class="p-2 border border-slate-300">LIGA</th>
+                        <th class="p-2 border border-slate-300 text-center">KG AMOSTRA</th>
+                        <th class="p-2 border border-slate-300 text-center">KG TEÓRICO</th>
+                        <th class="p-2 border border-slate-300 text-center">CLIENTE</th>
                     {% else %}
                         <th class="p-2 border border-slate-300">CATEGORIA</th>
                         <th class="p-2 border border-slate-300 text-right">ESTOQUE ATUAL</th>
@@ -29,43 +34,56 @@
             </thead>
             <tbody>
                 {% for produto in produtos %}
-                <tr class="hover:bg-slate-50 {% if setor == 'engenharia' %}bg-green-50/50 hover:bg-green-100{% endif %}">
-                    <td class="p-2 border border-slate-300 font-bold text-blue-700">
-                        {{ produto.codigo_interno }}
+                <tr class="hover:bg-slate-50 {% if setor == 'engenharia' %}bg-green-50/40 hover:bg-green-100/60{% endif %}">
+                    
+                    {% if setor == 'engenharia' %}
+                        <td class="p-2 border border-slate-300 font-bold text-slate-600">
+                            {{ produto.numero_projeto|default:"---" }}
+                        </td>
+                    {% endif %}
+
+                    <td class="p-2 border border-slate-300 font-mono font-black">
+                        {% if setor == 'engenharia' and produto.caminho_projeto_cad %}
+                            <a href="file://{{ produto.caminho_projeto_cad|replace_backslashes }}" 
+                               title="Abrir projeto no Inventor: {{ produto.caminho_projeto_cad }}"
+                               class="text-orange-700 hover:text-orange-500 flex items-center gap-1">
+                                <i class="fas fa-cube text-[9px]"></i>
+                                <span>{{ produto.codigo_interno }}</span>
+                            </a>
+                        {% else %}
+                            <span class="text-slate-700">{{ produto.codigo_interno }}</span>
+                        {% endif %}
                     </td>
 
-                    <td class="p-2 border border-slate-300 font-bold">
-                        {% if setor == 'engenharia' %}
-                            <a href="#" class="text-blue-800 underline hover:text-blue-600">{{ produto.nome }}</a>
-                        {% else %}
-                            <span class="text-slate-800">{{ produto.nome }}</span>
-                        {% endif %}
-                        <div class="text-[9px] text-gray-500 font-normal">{{ produto.linha }}</div>
+                    <td class="p-2 border border-slate-300">
+                        <a href="{% url 'produtos:produto_detail' produto.pk %}" class="text-blue-800 font-black hover:underline">
+                            {{ produto.nome }}
+                        </a>
+                        <div class="text-[8px] text-gray-400 font-normal italic">{{ produto.linha }}</div>
                     </td>
                     
                     {% if setor == 'engenharia' %}
-                        <td class="p-2 border border-slate-300 text-center">
-                            <span class="font-bold {% if produto.status_projeto == 'CONCLUIDO' %}text-green-700{% else %}text-blue-700{% endif %}">
-                                {{ produto.get_status_projeto_display }}
-                            </span>
+                        <td class="p-2 border border-slate-300 text-center font-bold italic text-slate-700">
+                            {{ produto.get_status_projeto_display }}
                         </td>
-                        <td class="p-2 border border-slate-300 text-center">{{ produto.material_peca }}</td>
-                        <td class="p-2 border border-slate-300 text-center">{{ produto.peso_bruto_amostra }} KG</td>
-                        
-                        <td class="p-2 border border-slate-300">
-                            <div class="flex items-center gap-1">
-                                <span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full text-[9px] font-bold">
-                                    {{ produto.get_estagio_producao_display }}
-                                </span>
-                            </div>
+                        <td class="p-2 border border-slate-300 text-center font-semibold text-blue-900">
+                            {{ produto.material_peca|default:"-" }}
                         </td>
-                        <td class="p-2 border border-slate-300 text-center">{{ produto.cliente_exclusivo|default:"PRÓPRIO" }}</td>
+                        <td class="p-2 border border-slate-300 text-center font-mono">
+                            {{ produto.peso_bruto_amostra|floatformat:3 }}
+                        </td>
+                        <td class="p-2 border border-slate-300 text-center font-mono text-blue-900">
+                            {{ produto.peso_teorico|floatformat:3 }}
+                        </td>
+                        <td class="p-2 border border-slate-300 text-center text-[9px]">
+                            {{ produto.cliente_exclusivo|default:"FUNDIMAR" }}
+                        </td>
                     {% else %}
-                        <td class="p-2 border border-slate-300">{{ produto.categoria.nome }}</td>
-                        <td class="p-2 border border-slate-300 text-right font-bold {% if produto.estoque_atual < produto.estoque_minimo %}text-red-600 animate-pulse{% endif %}">
+                        <td class="p-2 border border-slate-300 text-gray-600">{{ produto.categoria.nome }}</td>
+                        <td class="p-2 border border-slate-300 text-right font-black {% if produto.estoque_atual < produto.estoque_minimo %}text-red-600 animate-pulse{% endif %}">
                             {{ produto.estoque_atual }} {{ produto.unidade_medida }}
                         </td>
-                        <td class="p-2 border border-slate-300 text-right text-gray-500 italic">
+                        <td class="p-2 border border-slate-300 text-right text-gray-400 italic font-medium">
                             {{ produto.estoque_minimo }}
                         </td>
                     {% endif %}
